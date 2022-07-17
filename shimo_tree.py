@@ -10,6 +10,7 @@ import json
 from manipulate_data_new import RuleBase
 from data import Data
 
+
 def convert(input):
     # convert unicode to str in json
     if isinstance(input, dict):
@@ -21,14 +22,15 @@ def convert(input):
     else:
         return input
 
+
 # Read data from file
 # with open('temp_data.json') as file_data:
 with open('test.json') as file_data:
-# with open('2nd_order_tree.json') as file_data:
-#with open('api/single_tree.json') as file_data:
-# with open('sunonda_tree.json') as file_data:
-# with open('agriculture_tree.json') as file_data:
-#     data = json.load(file_data)
+    # with open('2nd_order_tree.json') as file_data:
+    # with open('api/single_tree.json') as file_data:
+    # with open('sunonda_tree.json') as file_data:
+    # with open('agriculture_tree.json') as file_data:
+    #     data = json.load(file_data)
     data = convert(json.load(file_data))
 
 # output_x2 = [[1,0,0],[0,1,0],[0,0,1]]
@@ -79,7 +81,6 @@ count = 1
 
 subtree = 1
 
-
 res = dict()
 result = list()
 
@@ -102,7 +103,7 @@ while len(obj_list):
     for j in range(i + 1, len(obj_list)):
         if obj_list[i].parent == obj_list[j].parent:
             visiting.append(obj_list[j])
-    visiting.append(obj_list[i]) # Add the current node in the list
+    visiting.append(obj_list[i])  # Add the current node in the list
     visiting.sort(key=lambda x: int(x.antecedent_id[1:]))
     for each in visiting:
         if each.parent == each.name:
@@ -166,7 +167,8 @@ while len(obj_list):
         continue
     else:
         # Compute the BRB sub-tree for the nodes in visiting.
-        print "Computing value of {} for {}".format(parent.antecedent_id, [str(each.antecedent_id) for each in visiting])
+        print "Computing value of {} for {}".format(parent.antecedent_id,
+                                                    [str(each.antecedent_id) for each in visiting])
         # import pdb; pdb.set_trace()
         # brb_calculation = RuleBase()
         rule_base = RuleBase(visiting, parent)
@@ -200,8 +202,11 @@ while len(obj_list):
         print "Calculated consequence values for {} are: {}".format(parent.antecedent_id, consequence_val)
         print "Crisp Value: {}".format(str(crisp_val))
 
-        print "Rule Row List: {}".format([each.__dict__ for each in row_list_1])
-
+        print "Rule Row List:"
+        for each in row_list_1:
+            if each.matching_degree == 0:
+                continue
+            print "{}".format([each.__dict__])
 
         # Remove the visited nodes from obj_list
         for each in visiting:
@@ -217,10 +222,10 @@ while len(obj_list):
                 i = 0
         print "Remaining nodes for traversal: {}".format([str(each.antecedent_id) for each in obj_list])
 
-        print "\nIn iteration {}, {} is calculated and now it's an input node. We've calculated {} subtrees so far.".format(count-1, str(current.antecedent_id), subtree)
+        print "\nIn iteration {}, {} is calculated and now it's an input node. We've calculated {} subtrees so far.".format(
+            count - 1, str(current.antecedent_id), subtree)
         subtree += 1
         obj_list.sort(key=lambda x: x.is_input == "true", reverse=True)
-
 
 # for each in result:
 #     print each
@@ -229,4 +234,4 @@ for each in res:
     for i in range(len(each.ref_val)):
         crisp_val += float(each.ref_val[i]) * float(res[each][i])
         # print "res[each][i]: {}".format(res[each][i])
-    print 'parent_node: {} , result: {} , crisp_val: {}'.format(each.antecedent_id, res[each],crisp_val)
+    print 'parent_node: {} , result: {} , crisp_val: {}'.format(each.antecedent_id, res[each], crisp_val)

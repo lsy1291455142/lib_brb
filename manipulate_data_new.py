@@ -129,8 +129,8 @@ class RuleBase(object):
 
     def input_transformation(self):
         for each in self.obj_list:
-            if each.consequent_values != [u'[]']:
-                print '{} \'s consequent_values is not none : {}'.format(each.name,each.consequent_values)
+            if each.consequent_values != ['[]']:
+                print '{} \'s consequent_values is not none : {}'.format(each.name, each.consequent_values)
                 each.transformed_val = each.consequent_values
             else:
                 print "Input value for {} is {}".format(each.name, each.input_val)
@@ -156,7 +156,7 @@ class RuleBase(object):
                         if (float(each.ref_val[j]) > user_input) and (user_input > float(each.ref_val[j + 1])):
                             val_1 = (
                                     (float(each.ref_val[j]) - user_input) / (
-                                        float(each.ref_val[j]) - float(each.ref_val[j + 1]))
+                                    float(each.ref_val[j]) - float(each.ref_val[j + 1]))
                             )
                             each.transformed_val[j + 1] = str(val_1)
                             val_2 = 1 - val_1
@@ -173,29 +173,14 @@ class RuleBase(object):
         for i, row in enumerate(self.combinations):
             degree = 1.0
             for idx, val in enumerate(row):
-                if self.obj_list[idx].consequent_values == [0, 0, 0] or [0,0]:
-                    degree *= float(
-                        # pow(float(self.obj_list[idx].consequent_values[val]), float(self.obj_list[idx].attribute_weight))
-                        pow(float(self.obj_list[idx].transformed_val[val]), float(self.obj_list[idx].attribute_weight))
+                degree *= float(
+                    # pow(float(self.obj_list[idx].consequent_values[val]), float(self.obj_list[idx].attribute_weight))
+                    pow(float(self.obj_list[idx].transformed_val[val]), float(self.obj_list[idx].attribute_weight))
+                )
+                # print 'self.obj_list[idx].transformed_val[val]: {}'.format(self.obj_list[idx].transformed_val[val])
 
-                        # pow(float(self.obj_list[idx].transformed_val[val]), 1)
-                    )
-                    # print 'self.obj_list[idx].transformed_val: {}'.format(self.obj_list[idx].transformed_val)
-                else:
-                    degree *= float(
-                        pow(float(self.obj_list[idx].consequent_values[val]),
-                            float(self.obj_list[idx].attribute_weight))
-                        # pow(float(self.obj_list[idx].transformed_val[val]), float(self.obj_list[idx].attribute_weight))
-                        # pow(float(self.obj_list[idx].transformed_val[val]), 1)
-                    )
-                    print 'self.obj_list[idx].consequent_values: {}'.format(self.obj_list[idx].consequent_values)
-                # print 'degree:{}'.format(degree)
+                # print 'idx:{}\ttransformed_val[val]:{}\t\tobj_list:{}\tval:{}'.format(idx,self.obj_list[idx].transformed_val[val],idx,val)
 
-                # print 'idx:{}\ttransformed_val[val]:{}\tobj_list:{}\tval:{}\tdegree:{}'.format(idx,self.obj_list[idx].transformed_val[val],idx,val,degree)
-
-                # degree = float(
-                #     (float(self.obj_list[idx].transformed_val[val]) * float(self.obj_list[idx].attribute_weight))
-                # )
             matching_degree.insert(i, degree)
         print "matching_degree: {}".format(matching_degree)
         sum = 0.0
@@ -226,38 +211,42 @@ class RuleBase(object):
     '''
 
     def belief_update(self):
-        tao = [0 for _ in range(len(self.obj_list))]
-        for i in range(len(self.obj_list)):
-            # if obj_list[i].name != 'x8':
-            try:
-                input_val = float(self.obj_list[i].input_val)
-            except:
-                input_val = 0
-            if input_val != 0:
-                tao[i] = 1
-        total = 0
+        # print "self.output_val_list: {}".format(type(self.output_val_list))
+        if self.output_val_list == [] or self.output_val_list == [[]]:
+            tao = [0 for _ in range(len(self.obj_list))]
+            for i in range(len(self.obj_list)):
+                # if obj_list[i].name != 'x8':
+                try:
+                    input_val = float(self.obj_list[i].input_val)
+                except:
+                    input_val = 0
+                if input_val != 0:
+                    tao[i] = 1
+            total = 0
 
-        for j in range(len(self.obj_list)):
-            summation = sum([float(each) for each in self.obj_list[j].transformed_val])
-            total += summation
+            for j in range(len(self.obj_list)):
+                summation = sum([float(each) for each in self.obj_list[j].transformed_val])
+                total += summation
 
-        if sum([each for each in tao]) <= 0:
-            update_value = 1
+            if sum([each for each in tao]) <= 0:
+                update_value = 1
+            else:
+                update_value = total / float(sum([each for each in tao]))
+
+            for each in self.rule_row_list:
+                new_val_list = []
+                for idx, row in enumerate(each.consequence_val):
+                    # print "Before: {} {}".format(idx, row)
+                    new_val = float(row) * update_value
+                    # print 'update_value: {}'.format(update_value)
+                    new_val_list.insert(idx, new_val)
+                    # print "After: {} {}".format(idx, new_val)
+
+                each.consequence_val = new_val_list
+
         else:
-            update_value = total / float(sum([each for each in tao]))
-
-        for each in self.rule_row_list:
-            new_val_list = []
-            for idx, row in enumerate(each.consequence_val):
-                # print "Before: {} {}".format(idx, row)
-                new_val = float(row) * update_value
-                # print 'update_value: {}'.format(update_value)
-                new_val_list.insert(idx, new_val)
-                # print "After: {} {}".format(idx, new_val)
-
-            each.consequence_val = new_val_list
-        for each in range(len(self.rule_row_list)):
-            self.rule_row_list[each].consequence_val = self.output_val_list[each]
+            for each in range(len(self.rule_row_list)):
+                self.rule_row_list[each].consequence_val = self.output_val_list[each]
 
         for each in self.rule_row_list:
             print "{}".format(each.consequence_val)
@@ -325,7 +314,7 @@ class RuleBase(object):
 
         mhn = kn1 * mh
 
-        aggregated_consequence_val = [0 for k in range(3)]
+        aggregated_consequence_val = [0 for _ in range(3)]
         for k in range(len(rowsum)):
             aggregated_consequence_val[k] = m[k] / (1 - mhn)
 
