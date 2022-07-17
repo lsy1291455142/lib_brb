@@ -3,6 +3,8 @@ from collections import OrderedDict
 import logging
 from rules import Rules
 from data import Data
+from fractions import Fraction
+
 
 # with open('data.json') as file_data:
 # with open('single_tree.json') as file_data:
@@ -17,6 +19,8 @@ class RuleBase(object):
         self.parent = parent
         self.con_ref_values = [0 for _ in range(len(self.parent.ref_val))]
         self.combinations = [[]]
+        self.rule_weight_list = []
+        self.output_val_list = []
 
     '''
     Create initial rule base
@@ -48,7 +52,6 @@ class RuleBase(object):
             self.con_ref_values[i] = current_val
             # logging.warning("New value: {}".format(current_val))
 
-
         # Calculate the number of possible combinations of reference values.
         array_for_ref_count = [[]]
 
@@ -63,20 +66,22 @@ class RuleBase(object):
         pools = [tuple(pool) for pool in array] * 1
         result = [[]]
         for pool in pools:
-            result = [x+[y] for x in result for y in pool]
+            result = [x + [y] for x in result for y in pool]
 
         for each in result:
             self.combinations.append(each)
 
         self.combinations = self.combinations[1:]
 
-        # print "Combinations are: {}".format(combinations)
+        print "Combinations are: {}".format(self.combinations)
 
         print "Consequence values are: {}".format(self.con_ref_values)
 
         # Calculate y for each combination and distribute consequence values in the range
         for each in self.combinations:
             rules = Rules()
+            # rules.rule_weight = 0.8
+            # rules.rule_weight = [1,0.8,1]
             row_val = [0 for _ in range(len(self.con_ref_values))]
             y = 0.0
             for i in range(len(self.obj_list)):
@@ -96,15 +101,22 @@ class RuleBase(object):
             else:
                 for idx in range(len(self.con_ref_values) - 1):
                     if (self.con_ref_values[idx] > y) and (y > self.con_ref_values[idx + 1]):
-                        row_val[idx + 1]  = float(
-                                (self.con_ref_values[idx] - y) /
-                                (self.con_ref_values[idx] - self.con_ref_values[idx + 1])
-                            )
+                        row_val[idx + 1] = float(
+                            (self.con_ref_values[idx] - y) /
+                            (self.con_ref_values[idx] - self.con_ref_values[idx + 1])
+                        )
                         row_val[idx] = float(1 - row_val[idx + 1])
 
                 rules.consequence_val = row_val
                 rules.combinations = each
+                # rules.rule_weight = rules.rule_weight_list[enumerate(rules.combinations)]
+                # print rules.combinations.index(each)
                 self.rule_row_list.append(rules)
+
+        for each in range(len(self.rule_weight_list)):
+            self.rule_weight_list[each] = float(Fraction(self.rule_weight_list[each]))
+            # print "Rule weight: {}".format(type(self.rule_weight_list[each]))
+            self.rule_row_list[each].rule_weight = self.rule_weight_list[each]
 
         print "Rule Base: "
         for each in self.rule_row_list:
@@ -117,33 +129,38 @@ class RuleBase(object):
 
     def input_transformation(self):
         for each in self.obj_list:
-            print "Input value for {} is {}".format(each.name, each.input_val)
-            # print "Value before input transformation: {}".format(each.transformed_val)
-            try:
-                user_input = float(each.input_val)
-                # user_input = float(each.crisp_val)
-            except:
-                user_input = 0
+            if each.consequent_values != [u'[]']:
+                print '{} \'s consequent_values is not none : {}'.format(each.name,each.consequent_values)
+                each.transformed_val = each.consequent_values
+            else:
+                print "Input value for {} is {}".format(each.name, each.input_val)
+                # print "Value before input transformation: {}".format(each.transformed_val)
+                try:
+                    user_input = float(each.input_val)
+                    # user_input = float(each.crisp_val)
+                except:
+                    user_input = 0
 
-            if user_input > float(each.ref_val[0]):
-                user_input = float(each.ref_val[0])
-            elif user_input < float(each.ref_val[len(each.ref_val) - 1]):
-                user_input = float(each.ref_val[len(each.ref_val) - 1])
-            flag = False
-            for i in range(len(each.ref_val)):
-                if user_input == float(each.ref_val[i]):
-                    each.transformed_val[i] = 1
-                    flag = True
-                    break
-            if not flag:
-                for j in range(len(each.ref_val) - 1):
-                    if (float(each.ref_val[j]) > user_input) and (user_input > float(each.ref_val[j+1])):
-                        val_1 = (
-                            (float(each.ref_val[j]) - user_input) / (float(each.ref_val[j]) - float(each.ref_val[j+1]))
-                        )
-                        each.transformed_val[j + 1] = str(val_1)
-                        val_2 = 1 - val_1
-                        each.transformed_val[j] = str(val_2)
+                if user_input > float(each.ref_val[0]):
+                    user_input = float(each.ref_val[0])
+                elif user_input < float(each.ref_val[len(each.ref_val) - 1]):
+                    user_input = float(each.ref_val[len(each.ref_val) - 1])
+                flag = False
+                for i in range(len(each.ref_val)):
+                    if user_input == float(each.ref_val[i]):
+                        each.transformed_val[i] = 1
+                        flag = True
+                        break
+                if not flag:
+                    for j in range(len(each.ref_val) - 1):
+                        if (float(each.ref_val[j]) > user_input) and (user_input > float(each.ref_val[j + 1])):
+                            val_1 = (
+                                    (float(each.ref_val[j]) - user_input) / (
+                                        float(each.ref_val[j]) - float(each.ref_val[j + 1]))
+                            )
+                            each.transformed_val[j + 1] = str(val_1)
+                            val_2 = 1 - val_1
+                            each.transformed_val[j] = str(val_2)
             print "Value after input transformation: {}".format(each.transformed_val)
 
     '''
@@ -156,12 +173,31 @@ class RuleBase(object):
         for i, row in enumerate(self.combinations):
             degree = 1.0
             for idx, val in enumerate(row):
-                degree *= float(
-                    pow(float(self.obj_list[idx].transformed_val[val]), float(self.obj_list[idx].attribute_weight))
+                if self.obj_list[idx].consequent_values == [0, 0, 0] or [0,0]:
+                    degree *= float(
+                        # pow(float(self.obj_list[idx].consequent_values[val]), float(self.obj_list[idx].attribute_weight))
+                        pow(float(self.obj_list[idx].transformed_val[val]), float(self.obj_list[idx].attribute_weight))
 
-                )
+                        # pow(float(self.obj_list[idx].transformed_val[val]), 1)
+                    )
+                    # print 'self.obj_list[idx].transformed_val: {}'.format(self.obj_list[idx].transformed_val)
+                else:
+                    degree *= float(
+                        pow(float(self.obj_list[idx].consequent_values[val]),
+                            float(self.obj_list[idx].attribute_weight))
+                        # pow(float(self.obj_list[idx].transformed_val[val]), float(self.obj_list[idx].attribute_weight))
+                        # pow(float(self.obj_list[idx].transformed_val[val]), 1)
+                    )
+                    print 'self.obj_list[idx].consequent_values: {}'.format(self.obj_list[idx].consequent_values)
+                # print 'degree:{}'.format(degree)
+
+                # print 'idx:{}\ttransformed_val[val]:{}\tobj_list:{}\tval:{}\tdegree:{}'.format(idx,self.obj_list[idx].transformed_val[val],idx,val,degree)
+
+                # degree = float(
+                #     (float(self.obj_list[idx].transformed_val[val]) * float(self.obj_list[idx].attribute_weight))
+                # )
             matching_degree.insert(i, degree)
-
+        print "matching_degree: {}".format(matching_degree)
         sum = 0.0
         for k in range(len(self.rule_row_list)):
             current_rule = self.rule_row_list[k]
@@ -176,6 +212,14 @@ class RuleBase(object):
             )
             current_rule.activation_weight = activation_weight
 
+        activation_weight_list = list()
+        for p in self.rule_row_list:
+            activation_weight_list.append(p.activation_weight)
+        print "activation_weight_list: {}".format(activation_weight_list)
+        # print "activation_weight: {}".format(activation_weight)
+        # for each in self.rule_row_list:
+        #     print each.__dict__
+        return self.rule_row_list
 
     '''
     Update rule base
@@ -197,7 +241,6 @@ class RuleBase(object):
             summation = sum([float(each) for each in self.obj_list[j].transformed_val])
             total += summation
 
-
         if sum([each for each in tao]) <= 0:
             update_value = 1
         else:
@@ -208,9 +251,13 @@ class RuleBase(object):
             for idx, row in enumerate(each.consequence_val):
                 # print "Before: {} {}".format(idx, row)
                 new_val = float(row) * update_value
+                # print 'update_value: {}'.format(update_value)
                 new_val_list.insert(idx, new_val)
                 # print "After: {} {}".format(idx, new_val)
+
             each.consequence_val = new_val_list
+        for each in range(len(self.rule_row_list)):
+            self.rule_row_list[each].consequence_val = self.output_val_list[each]
 
         for each in self.rule_row_list:
             print "{}".format(each.consequence_val)
@@ -218,6 +265,7 @@ class RuleBase(object):
     '''
     Rule aggregation
     '''
+
     def aggregate_rule(self):
         # Get all the consequent value list from rule base
         consequent_array = []
@@ -235,9 +283,9 @@ class RuleBase(object):
                 # pdb.set_trace()
                 # for key, val in enumerate(each):
                 mn[idx][i] = float(
-                        float(self.rule_row_list[i].activation_weight) *
-                        float(each)
-                    )
+                    float(self.rule_row_list[i].activation_weight) *
+                    float(each)
+                )
 
         # Calculate md from the consequent array and save in a 1Ds array(named md here)
         md = [0 for _ in range(len(self.rule_row_list))]
@@ -264,7 +312,7 @@ class RuleBase(object):
         mh = 1
 
         for i in range(len(md)):
-          mh *= md[i]
+            mh *= md[i]
 
         # Step 3: Calculate kn, kn1, m(1D array), mhn and aggregated_consequence_val
         kn = total_rowsum - (2 * mh)
@@ -285,7 +333,6 @@ class RuleBase(object):
         output = [each for each in aggregated_consequence_val]
         print "Aggregated Rules: ".format(output)
         return output
-
 
 # obj_list = list()
 # parent = ""

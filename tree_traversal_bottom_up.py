@@ -11,7 +11,8 @@ from manipulate_data_new import RuleBase
 from data import Data
 
 # Read data from file
-with open('temp_data.json') as file_data:
+# with open('temp_data.json') as file_data:
+with open('test.json') as file_data:
 # with open('2nd_order_tree.json') as file_data:
 #with open('api/single_tree.json') as file_data:
 # with open('sunonda_tree.json') as file_data:
@@ -156,5 +157,5 @@ while len(obj_list):
         obj_list.sort(key=lambda x: x.is_input == "true", reverse=True)
 
 
-# for each in result:
-#     print each
+for each in result:
+    print each

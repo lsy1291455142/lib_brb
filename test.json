@@ -1,0 +1,283 @@
+{
+  "x1": {
+    "antecedent_id": "x1",
+    "antecedent_name": "Onset rainfall",
+    "attribute_weight": "1",
+    "ref_val": [
+      "1",
+      "0.5",
+      "0"
+    ],
+    "ref_title": [
+      "High",
+      "Medium",
+      "Low"
+    ],
+    "consequent_values": [
+      "[]"
+    ],
+    "output_weight_values": [
+      []
+    ],
+    "input_rule_weight_list_by_parent": [
+      []
+    ],
+    "crisp_val": "",
+    "parent": "x8",
+    "input_val": "0.8",
+    "is_input": "true"
+  },
+  "x11": {
+    "antecedent_id": "x11",
+    "antecedent_name": "Onset rainfall",
+    "attribute_weight": "1",
+    "ref_val": [
+      "1",
+      "0.5",
+      "0"
+    ],
+    "ref_title": [
+      "High",
+      "Medium",
+      "Low"
+    ],
+    "consequent_values": [
+      "[]"
+    ],
+    "output_weight_values": [
+      []
+    ],
+    "input_rule_weight_list_by_parent": [
+      []
+    ],
+    "crisp_val": "",
+    "parent": "x2",
+    "input_val": "0.8",
+    "is_input": "true"
+  },
+  "x2": {
+    "antecedent_id": "x2",
+    "antecedent_name": "Prolonged rainfall",
+    "attribute_weight": "1",
+    "ref_val": [
+      "1",
+      "0.5",
+      "0"
+    ],
+    "ref_title": [
+      "High",
+      "Medium",
+      "Low"
+    ],
+    "consequent_values": [
+      "[]"
+    ],
+    "output_weight_values": [
+      [1,0,0],[0,1,0],[0,0,1]
+    ],
+    "input_rule_weight_list_by_parent": [
+      1,1,1
+    ],
+    "crisp_val": "",
+    "parent": "x4",
+    "input_val": "",
+    "is_input": "false"
+  },
+  "x3": {
+      "antecedent_id": "x3",
+      "antecedent_name": "Rainfall",
+      "attribute_weight": "1",
+      "ref_val": [
+        "1",
+        "0.5",
+        "0"
+      ],
+      "ref_title": [
+        "High",
+        "Medium",
+        "Low"
+      ],
+      "consequent_values": [
+        "[]"
+      ],
+      "output_weight_values": [
+        []
+      ],
+      "input_rule_weight_list_by_parent": [
+        []
+      ],
+      "crisp_val": "",
+      "parent": "x4",
+      "input_val": "0.98",
+      "is_input": "true"
+    },
+  "x4": {
+      "antecedent_id": "x4",
+      "antecedent_name": "Rainfall",
+      "attribute_weight": "1",
+      "ref_val": [
+      "1",
+      "0.5",
+      "0"
+      ],
+      "ref_title": [
+      "High",
+      "Medium",
+      "Low"
+      ],
+      "consequent_values": [
+      "[]"
+      ],
+      "output_weight_values": [
+      [1,0,0],[0.3,0.7,0],[0,0,0],[0.3,0.7,0],[0,1,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]
+      ],
+      "input_rule_weight_list_by_parent": [
+      1,0.7,0.5,0.7,0.7,0.5,"1/3","1/3","1/3"
+      ],
+      "crisp_val": "",
+      "parent": "x6",
+      "input_val": "0.9652",
+      "is_input": "false"
+  },
+    "x5": {
+        "antecedent_id": "x5",
+        "antecedent_name": "Rainfall",
+        "attribute_weight": "1",
+        "ref_val": [
+        "1",
+        "0.5",
+        "0"
+        ],
+        "ref_title": [
+        "High",
+        "Medium",
+        "Low"
+        ],
+        "consequent_values": [
+        "[]"
+        ],
+        "output_weight_values": [
+        []
+        ],
+        "input_rule_weight_list_by_parent": [
+        []
+        ],
+        "crisp_val": "",
+        "parent": "x6",
+        "input_val": "0.2",
+        "is_input": "true"
+    },
+    "x6": {
+        "antecedent_id": "x6",
+        "antecedent_name": "Rainfall",
+        "attribute_weight": "1",
+        "ref_val": [
+        "1",
+        "0.5",
+        "0"
+        ],
+        "ref_title": [
+        "High",
+        "Medium",
+        "Low"
+        ],
+        "consequent_values": [
+        "[]"
+        ],
+        "output_weight_values": [
+        [1,0,0], [0.2,0.8,0], [0.1,0.3,0.6], [0.4,0.6,0], [0,1,0], [0,0.2,0.8], [0,1,0], [0,0.2,0.8], [0,0,1]
+        ],
+        "input_rule_weight_list_by_parent": [
+        1,1,0.2,1,0.4,1,1,1,1
+        ],
+        "crisp_val": "",
+        "parent": "x9",
+        "input_val": "",
+        "is_input": "false"
+    },
+    "x7": {
+        "antecedent_id": "x7",
+        "antecedent_name": "Rainfall",
+        "attribute_weight": "1",
+        "ref_val": [
+        "1",
+        "0.5",
+        "0"
+        ],
+        "ref_title": [
+        "High",
+        "Medium",
+        "Low"
+        ],
+        "consequent_values": [
+        "[]"
+        ],
+        "output_weight_values": [
+        []
+        ],
+        "input_rule_weight_list_by_parent": [
+        []
+        ],
+        "crisp_val": "",
+        "parent": "x8",
+        "input_val": "0.8",
+        "is_input": "true"
+    },
+    "x8": {
+        "antecedent_id": "x8",
+        "antecedent_name": "Rainfall",
+        "attribute_weight": "1",
+        "ref_val": [
+        "1",
+        "0.5",
+        "0"
+        ],
+        "ref_title": [
+        "High",
+        "Medium",
+        "Low"
+        ],
+        "consequent_values": [
+        "[]"
+        ],
+        "output_weight_values": [
+        [1, 0, 0], [0.4, 0.6, 0], [0.1, 0.3, 0.6], [0.3, 0.7, 0], [0, 1, 0], [0, 0.3, 0.7],[0, 0.3, 0.7], [0, 0.1, 0.9], [0, 0, 1]
+        ],
+        "input_rule_weight_list_by_parent": [
+        1,1,1,0.2,0.4,1,0.8,1,1
+        ],
+        "crisp_val": "",
+        "parent": "x9",
+        "input_val": "",
+        "is_input": "false"
+    },
+    "x9": {
+        "antecedent_id": "x9",
+        "antecedent_name": "Rainfall",
+        "attribute_weight": "1",
+        "ref_val": [
+        "1",
+        "0.5",
+        "0"
+        ],
+        "ref_title": [
+        "High",
+        "Medium",
+        "Low"
+        ],
+        "consequent_values": [
+        "[]"
+        ],
+        "output_weight_values": [
+        [1, 0, 0], [0.2, 0.8, 0], [0.1, 0.2, 0.7], [0.2, 0.8, 0], [0, 1, 0], [0, 0.1, 0.9],[0.1, 0.2, 0.7], [0, 0.1, 0.9], [0, 0, 1]
+        ],
+        "input_rule_weight_list_by_parent":
+        [
+        1,0.6,1,0.6,0.6,1,1,1,1
+        ],
+        "crisp_val": "",
+        "parent": "x9",
+        "input_val": "",
+        "is_input": "false"
+    }
+}
